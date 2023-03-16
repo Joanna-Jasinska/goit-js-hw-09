@@ -42,7 +42,9 @@ btnCreate.addEventListener('click', e => {
     let delay =
       Number(btnDelayPerPromise.value) * i + Number(btnBaseDelay.value);
     let timer = null;
-    createPromise(i, delay).then(onSuccess).catch(onReject);
+    createPromise(i + 1, delay)
+      .then(onSuccess)
+      .catch(onReject);
   }
 
   //
