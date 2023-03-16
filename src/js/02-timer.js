@@ -18,7 +18,8 @@ const fp = flatpickr('#datetime-picker', {
     countdownDate = selectedDates[0];
     if (validateDate(countdownDate)) {
       resetTimer();
-      update(1, '?');
+      // update(1, '??');
+      update(1, '00');
     } else {
       update(1, '00');
       if (timer) {
@@ -44,7 +45,8 @@ const setTimer = e => {
   if (timer) {
     clearInterval(timer);
     btnStart.innerText = 'Start';
-    update(1, '?');
+    // update(1, '??');
+    update(1, '00');
     timer = null;
   } else {
     update();
@@ -70,13 +72,18 @@ function convertMs(ms) {
   const minute = second * 60;
   const hour = minute * 60;
   const day = hour * 24;
-  const days = Math.floor(ms / day);
-  const hours = Math.floor((ms % day) / hour);
-  const minutes = Math.floor(((ms % day) % hour) / minute);
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const days = String(Math.floor(ms / day)).padStart(2, 0);
+  const hours = String(Math.floor((ms % day) / hour)).padStart(2, 0);
+  const minutes = String(Math.floor(((ms % day) % hour) / minute)).padStart(
+    2,
+    0
+  );
+  const seconds = String(
+    Math.floor((((ms % day) % hour) % minute) / second)
+  ).padStart(2, 0);
   return { days, hours, minutes, seconds };
 }
-const update = (pause = false, symbol = '?') => {
+const update = (pause = false, symbol = '00') => {
   if (pause) {
     daysDisplay.innerHTML = symbol;
     hoursDisplay.innerHTML = symbol;
