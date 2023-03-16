@@ -33,7 +33,7 @@ const fp = flatpickr('#datetime-picker', {
   },
 });
 
-const validateDate = date => {
+const validateDate = (date = new Date()) => {
   const now = new Date();
   let valid = Number(date) > Number(now);
   btnStart.disabled = !valid;
@@ -43,8 +43,10 @@ const setTimer = e => {
   if (timer) {
     clearInterval(timer);
     btnStart.innerText = 'Start';
+    update(1);
     timer = null;
   } else {
+    update();
     timer = setInterval(update, 1000);
     btnStart.innerText = 'Stop';
   }
@@ -57,23 +59,30 @@ const resetTimer = () => {
   }
 };
 function convertMs(ms) {
+  if (Number(ms) <= 0) {
+    resetTimer();
+    validateDate();
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
   // Number of milliseconds per unit of time
   const second = 1000;
   const minute = second * 60;
   const hour = minute * 60;
   const day = hour * 24;
-  // Remaining days
   const days = Math.floor(ms / day);
-  // Remaining hours
   const hours = Math.floor((ms % day) / hour);
-  // Remaining minutes
   const minutes = Math.floor(((ms % day) % hour) / minute);
-  // Remaining seconds
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
   return { days, hours, minutes, seconds };
 }
-const update = () => {
-  //   console.log('updating');
+const update = (pause = false) => {
+  if (pause) {
+    daysDisplay.innerHTML = '?';
+    hoursDisplay.innerHTML = '?';
+    minutesDisplay.innerHTML = '?';
+    secondsDisplay.innerHTML = '?';
+    return;
+  }
   let timeDifference = Number(countdownDate) - Number(new Date());
   let countdown = convertMs(timeDifference);
   daysDisplay.innerHTML = countdown.days;
