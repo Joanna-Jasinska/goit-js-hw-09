@@ -18,7 +18,9 @@ const fp = flatpickr('#datetime-picker', {
     countdownDate = selectedDates[0];
     if (validateDate(countdownDate)) {
       resetTimer();
+      update(1, '?');
     } else {
+      update(1, '00');
       if (timer) {
         clearInterval(timer);
         btnStart.innerText = 'Start';
@@ -29,7 +31,6 @@ const fp = flatpickr('#datetime-picker', {
         timeout: 3000,
       });
     }
-    update();
   },
 });
 
@@ -43,7 +44,7 @@ const setTimer = e => {
   if (timer) {
     clearInterval(timer);
     btnStart.innerText = 'Start';
-    update(1);
+    update(1, '?');
     timer = null;
   } else {
     update();
@@ -59,10 +60,10 @@ const resetTimer = () => {
   }
 };
 function convertMs(ms) {
-  if (Number(ms) <= 0) {
+  if (Number(ms) < 100) {
     resetTimer();
     validateDate();
-    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return { days: '00', hours: '00', minutes: '00', seconds: '00' };
   }
   // Number of milliseconds per unit of time
   const second = 1000;
@@ -75,12 +76,12 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
   return { days, hours, minutes, seconds };
 }
-const update = (pause = false) => {
+const update = (pause = false, symbol = '?') => {
   if (pause) {
-    daysDisplay.innerHTML = '?';
-    hoursDisplay.innerHTML = '?';
-    minutesDisplay.innerHTML = '?';
-    secondsDisplay.innerHTML = '?';
+    daysDisplay.innerHTML = symbol;
+    hoursDisplay.innerHTML = symbol;
+    minutesDisplay.innerHTML = symbol;
+    secondsDisplay.innerHTML = symbol;
     return;
   }
   let timeDifference = Number(countdownDate) - Number(new Date());
